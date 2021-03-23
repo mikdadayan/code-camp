@@ -1,18 +1,19 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
-const courseSchema = new mongoose.Schema({
+const CodecampSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please add a name"],
     unique: true,
     trim: true,
-    maxlength: [50, " Name can not be more than 50 characters"],
+    maxlength: [50, "Name can not be more than 50 characters"],
   },
   slug: String,
   description: {
     type: String,
     required: [true, "Please add a description"],
-    maxlength: [500, " Description can not be more than 500 characters"],
+    maxlength: [500, "Description can not be more than 500 characters"],
   },
   website: {
     type: String,
@@ -23,27 +24,27 @@ const courseSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    maxlength: [20, "Phone number can not be longer than 20 characters."],
+    maxlength: [20, "Phone number can not be longer than 20 characters"],
   },
   email: {
     type: String,
     match: [
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      ,
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       "Please add a valid email",
     ],
   },
-  address: { type: String, required: [true, "Please add an address"] },
-
+  address: {
+    type: String,
+    required: [true, "Please add an address"],
+  },
   location: {
+    // GeoJSON Point
     type: {
       type: String,
       enum: ["Point"],
-      required: true,
     },
     coordinates: {
       type: [Number],
-      required: true,
       index: "2dsphere",
     },
     formattedAddress: String,
@@ -54,11 +55,11 @@ const courseSchema = new mongoose.Schema({
     country: String,
   },
   careers: {
+    // Array of strings
     type: [String],
     required: true,
-    // enum means that these are the only available values
     enum: [
-      "Web development",
+      "Web Development",
       "Mobile Development",
       "UI/UX",
       "Data Science",
@@ -68,15 +69,26 @@ const courseSchema = new mongoose.Schema({
   },
   averageRating: {
     type: Number,
-    min: [1, "Rating must be at least 1 "],
-    max: [10, "Rating can not be more than 10"],
+    min: [1, "Rating must be at least 1"],
+    max: [10, "Rating must can not be more than 10"],
   },
   averageCost: Number,
-  photo: { type: String, default: "no-photo.jpg" },
-
-  housing: { type: Boolean, default: false },
-  jobAssistance: { type: Boolean, default: false },
-  jobGuarantee: { type: Boolean, default: false },
+  photo: {
+    type: String,
+    default: "no-photo.jpg",
+  },
+  housing: {
+    type: Boolean,
+    default: false,
+  },
+  jobAssistance: {
+    type: Boolean,
+    default: false,
+  },
+  jobGuarantee: {
+    type: Boolean,
+    default: false,
+  },
   acceptGi: {
     type: Boolean,
     default: false,
@@ -85,6 +97,17 @@ const courseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  // user: {
+  //   type: mongoose.Schema.ObjectId,
+  //   ref: "User",
+  //   required: true,
+  // },
 });
 
-module.exports = mongoose.model("Course", courseSchema);
+// create codecamp slug from the name
+CodecampSchema.pre("save", function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
+
+module.exports = mongoose.model("Codecamp", CodecampSchema);

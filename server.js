@@ -2,7 +2,9 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const colors = require("colors");
+
 const connectDB = require("./config/db");
+const errorHandler = require("./middlewares/error");
 
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -10,16 +12,21 @@ dotenv.config({ path: "./config/config.env" });
 // Connect to database
 connectDB();
 
-const courses = require("./routes/courses");
+const codecamps = require("./routes/codecamps");
 
 const app = express();
+
+// Body Parser
+app.use(express.json());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 // Mount routes
-app.use("/api/v1/courses", courses);
+app.use("/api/v1/codecamps", codecamps);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

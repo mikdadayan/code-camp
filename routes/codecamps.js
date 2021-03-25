@@ -6,6 +6,7 @@ const {
   updateCodecamp,
   createCodecamp,
   deleteCodecamp,
+  getCodecampsInRadius,
 } = require("../controllers/codecamp");
 
 const router = express.Router();
@@ -13,6 +14,8 @@ const router = express.Router();
 router.get("/", getCodecamps);
 
 router.get("/:id", getCodecamp);
+
+router.get("/radius/:zipcode/:distance", getCodecampsInRadius);
 
 router.post("/", createCodecamp);
 

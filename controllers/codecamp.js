@@ -8,15 +8,44 @@ const CodeCamp = require("../models/CodeCamp");
 // @route GET /api/v1/codecamps
 // @access Public
 exports.getCodecamps = asyncHandler(async (req, res, next) => {
+  let query;
+
+  // Copy req.query
   const reqQuery = { ...req.query };
+  console.log(reqQuery);
+
+  // Fields to exclude
+  const removeFields = ["select", "sort"];
+
+  // Loop over removeFields, delete them from reqQuery
+  removeFields.forEach((param) => delete reqQuery[param]);
+
+  //Create query string
   let queryStr = JSON.stringify(reqQuery);
 
+  // Create operators($gt, $lte, ...)
   queryStr = queryStr.replace(
     /\b(gt|gte|lt|lte|in)\b/g,
     (match) => `$${match}`
   );
-  console.log(queryStr);
-  const codecamps = await Codecamp.find(JSON.parse(queryStr));
+
+  // Finding resource
+  query = Codecamp.find(JSON.parse(queryStr));
+
+  // Select Fields
+  if (req.query.select) {
+    const fields = req.query.select.split(",").join(" ");
+    console.log(fields);
+    query = query.select(fields);
+  }
+
+  // Sort
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(",").join(" ");
+    query = query.sort(sortBy);
+  }
+
+  const codecamps = await query;
   res
     .status(200)
     .json({ success: true, count: codecamps.length, data: codecamps });
@@ -100,7 +129,6 @@ exports.getCodecampsInRadius = asyncHandler(async (req, res, next) => {
   const loc = await geocoder.geocode(zipcode);
   const lat = loc[0].latitude;
   const lng = loc[0].longitude;
-  console.log(lat, lng);
   // Calc radius using radians
   // Divide distance by radius of earth
   // Earth Radius = 6378 km

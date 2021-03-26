@@ -8,7 +8,8 @@ const CodeCamp = require("../models/CodeCamp");
 // @route GET /api/v1/codecamps
 // @access Public
 exports.getCodecamps = asyncHandler(async (req, res, next) => {
-  let queryStr = JSON.stringify(req.query);
+  const reqQuery = { ...req.query };
+  let queryStr = JSON.stringify(reqQuery);
 
   queryStr = queryStr.replace(
     /\b(gt|gte|lt|lte|in)\b/g,

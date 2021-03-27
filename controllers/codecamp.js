@@ -12,7 +12,6 @@ exports.getCodecamps = asyncHandler(async (req, res, next) => {
 
   // Copy req.query
   const reqQuery = { ...req.query };
-  console.log(reqQuery);
 
   // Fields to exclude
   const removeFields = ["select", "sort"];
@@ -35,7 +34,6 @@ exports.getCodecamps = asyncHandler(async (req, res, next) => {
   // Select Fields
   if (req.query.select) {
     const fields = req.query.select.split(",").join(" ");
-    console.log(fields);
     query = query.select(fields);
   }
 

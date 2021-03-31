@@ -19,8 +19,8 @@ const courseSchema = new mongoose.Schema({
 
   minimumSkill: {
     type: String,
-    required: [type, "Please add a minimum skill"],
-    enum: ["beginer", "intermediat", "advanced"],
+    required: [true, "Please add a minimum skill"],
+    enum: ["beginner", "intermediate", "advanced"],
   },
 
   scholarshipAvailable: {
@@ -29,8 +29,10 @@ const courseSchema = new mongoose.Schema({
   },
 
   createdAt: {
-    type: Date.length,
+    type: Date,
     default: Date.now,
   },
   bootcamp: {},
 });
+
+module.exports = mongoose.model("Course", courseSchema);

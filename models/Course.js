@@ -32,7 +32,11 @@ const courseSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  bootcamp: {},
+  codecamp: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Codecamp",
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Course", courseSchema);

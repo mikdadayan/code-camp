@@ -17,6 +17,7 @@ console.log(process.env.MONGO_URI);
 connectDB();
 
 const codecamps = require("./routes/codecamps");
+const courses = require("./routes/courses");
 
 const app = express();
 
@@ -29,6 +30,7 @@ if (process.env.NODE_ENV === "development") {
 }
 // Mount routes
 app.use("/api/v1/codecamps", codecamps);
+app.use("/api/v1/courses", courses);
 
 app.use(errorHandler);
 

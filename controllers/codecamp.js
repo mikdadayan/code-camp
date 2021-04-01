@@ -29,7 +29,7 @@ exports.getCodecamps = asyncHandler(async (req, res, next) => {
   );
 
   // Finding resource
-  query = Codecamp.find(JSON.parse(queryStr));
+  query = Codecamp.find(JSON.parse(queryStr)).populate("courses");
 
   // Select Fields
   if (req.query.select) {
@@ -134,13 +134,15 @@ exports.updateCodecamp = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/codecamps/:id
 // @access Private
 exports.deleteCodecamp = asyncHandler(async (req, res, next) => {
-  const codecamp = await Codecamp.findByIdAndDelete(req.params.id);
+  const codecamp = await Codecamp.findById(req.params.id);
 
   if (!codecamp) {
     return next(
       new ErrorResponse(`CodeCamp not found with id ${req.params.id}`, 404)
     );
   }
+
+  codecamp.remove();
 
   res.status(200).json({
     success: "true",

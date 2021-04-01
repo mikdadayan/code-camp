@@ -11,6 +11,12 @@ const {
 
 const router = express.Router();
 
+// Include other resource routers
+const courseRouter = require("./courses");
+
+// Reroute into other resource routers
+router.use("/:codecampId/courses", courseRouter);
+
 router.get("/", getCodecamps);
 
 router.get("/:id", getCodecamp);

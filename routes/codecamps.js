@@ -7,6 +7,7 @@ const {
   createCodecamp,
   deleteCodecamp,
   getCodecampsInRadius,
+  codecampPhotoUpload,
 } = require("../controllers/codecamp");
 
 const router = express.Router();
@@ -17,16 +18,16 @@ const courseRouter = require("./courses");
 // Reroute into other resource routers
 router.use("/:codecampId/courses", courseRouter);
 
-router.get("/", getCodecamps);
+router.route("/radius/:zipcode/:distance").get(getCodecampsInRadius);
 
-router.get("/:id", getCodecamp);
+router.route("/:id/photo").put(codecampPhotoUpload);
 
-router.get("/radius/:zipcode/:distance", getCodecampsInRadius);
+router.route("/").get(getCodecamps).post(createCodecamp);
 
-router.post("/", createCodecamp);
-
-router.put("/:id", updateCodecamp);
-
-router.delete("/:id", deleteCodecamp);
+router
+  .route("/:id")
+  .get(getCodecamp)
+  .put(updateCodecamp)
+  .delete(deleteCodecamp);
 
 module.exports = router;

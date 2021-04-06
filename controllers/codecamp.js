@@ -1,3 +1,4 @@
+const path = require("path");
 const Codecamp = require("../models/CodeCamp");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middlewares/async");
@@ -173,4 +174,53 @@ exports.getCodecampsInRadius = asyncHandler(async (req, res, next) => {
   res
     .status(200)
     .json({ success: true, count: codecamps.length, data: codecamps });
+});
+
+// @desc Upload photo for Codecamp
+// @route PUT /api/v1/codecamps/:id/photo
+// @access Private
+exports.codecampPhotoUpload = asyncHandler(async (req, res, next) => {
+  const codecamp = await Codecamp.findById(req.params.id);
+
+  if (!codecamp) {
+    return next(
+      new ErrorResponse(`CodeCamp not found with id ${req.params.id}`, 404)
+    );
+  }
+
+  if (!req.files) {
+    return next(new ErrorResponse(`Please upload a file.`, 400));
+  }
+
+  const file = req.files.file;
+
+  // Make sure the file is photo
+  if (!file.mimetype.startsWith("image")) {
+    return next(new ErrorResponse(`Please upload an image.`, 400));
+  }
+
+  // Check file size
+  if (file.size > process.env.MAX_FILE_UPLOAD) {
+    return next(
+      new ErrorResponse(
+        `Please upload an image less then ${process.env.MAX_FILE_UPLOAD}.`,
+        400
+      )
+    );
+  }
+
+  // Create custom file name
+  file.name = `photo_${codecamp._id}${path.parse(file.name).ext}`;
+  console.log(file.name);
+
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
+    if (err) {
+      console.error(err);
+      return next(new ErrorResponse(`Problem with file upload.`, 500));
+    }
+
+    await Codecamp.findByIdAndUpdate(req.params.id, { photo: file.name });
+
+    res.status(200).json({ success: true, data: file.name });
+  });
 });

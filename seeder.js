@@ -29,7 +29,7 @@ const courses = JSON.parse(
 const importData = async () => {
   try {
     await CodeCamp.create(codecamps);
-    await Course.create(courses);
+    // await Course.create(courses);
     console.log("Imported Data to DB ...".green.inverse);
     process.exit();
   } catch (error) {

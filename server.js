@@ -9,10 +9,6 @@ const errorHandler = require("./middlewares/error");
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
 
-console.log(process.env.GEOCODER_PROVIDER);
-console.log(process.env.GEOCODER_API_KEY);
-console.log(process.env.MONGO_URI);
-
 // Connect to database
 connectDB();
 

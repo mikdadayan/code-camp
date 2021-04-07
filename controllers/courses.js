@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const asyncHandler = require("../middlewares/async");
 const CodeCamp = require("../models/CodeCamp");
 const Course = require("../models/Course");
@@ -9,15 +8,13 @@ const ErrorResponse = require("../utils/errorResponse");
 // @route GET /api/v1/codecamps/:codecampId/courses
 // @access Public
 const getCourses = asyncHandler(async (req, res, next) => {
-  let query;
-
   if (req.params.codecampId) {
-    query = Course.find({ codecamp: req.params.codecampId });
+    const courses = await Course.find({ codecamp: req.params.codecampId });
+    return res
+      .status(200)
+      .json({ success: true, count: courses.length, data: courses });
   } else {
-    query = Course.find().populate({
-      path: "codecamp",
-      select: "name description",
-    });
+    res.status(200).json(res.advacedResults);
   }
 
   const courses = await query;

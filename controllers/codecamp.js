@@ -141,7 +141,6 @@ exports.codecampPhotoUpload = asyncHandler(async (req, res, next) => {
 
   // Create custom file name
   file.name = `photo_${codecamp._id}${path.parse(file.name).ext}`;
-  console.log(file.name);
 
   file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (err) => {
     if (err) {

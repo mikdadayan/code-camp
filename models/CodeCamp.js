@@ -137,7 +137,6 @@ CodecampSchema.pre("save", async function (next) {
 CodecampSchema.pre("remove", async function (next) {
   await this.model("Course").deleteMany({ codecamp: this._id });
   console.log(`Courses being removed from codecamp ${this._id}`);
-  // console.log(JSON.parse(this.model("Course")));
   next();
 });
 

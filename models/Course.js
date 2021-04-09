@@ -50,7 +50,6 @@ courseSchema.statics.getAverageCost = async function (codecampId) {
     { $group: { _id: "$codecamp", averageCost: { $avg: "$tuition" } } },
   ]);
 
-  console.log(obj);
   try {
     await this.model("Codecamp").findByIdAndUpdate(codecampId, {
       averageCost: Math.ceil(obj[0].averageCost / 10) * 10,

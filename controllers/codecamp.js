@@ -1,5 +1,4 @@
 const path = require("path");
-const Codecamp = require("../models/CodeCamp");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middlewares/async");
 const geocoder = require("../utils/geocoder");

@@ -10,6 +10,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 
   // Create User
   const user = await User.create({ name, email, password, role });
+  console.log("First hit");
 
   //Create token
   const token = user.getSignedJwtToken();
@@ -23,6 +24,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
+  //validate email and password
   if (!email || !password) {
     return next(new ErrorResponse("Please provide an email and password", 400));
   }

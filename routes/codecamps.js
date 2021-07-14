@@ -13,6 +13,8 @@ const {
 const advancedResults = require("../middlewares/advacncedResults");
 const Codecamp = require("../models/CodeCamp");
 
+const { protect } = require("../middlewares/auth");
+
 const router = express.Router();
 
 // Include other resource routers
@@ -26,14 +28,14 @@ router.route("/radius/:zipcode/:distance").get(getCodecampsInRadius);
 router
   .route("/")
   .get(advancedResults(Codecamp, "courses"), getCodecamps)
-  .post(createCodecamp);
-
-router.route("/:id/photo").put(codecampPhotoUpload);
+  .post(protect, createCodecamp);
 
 router
   .route("/:id")
   .get(getCodecamp)
-  .put(updateCodecamp)
-  .delete(deleteCodecamp);
+  .put(protect, updateCodecamp)
+  .delete(protect, deleteCodecamp);
+
+router.route("/:id/photo").put(protect, codecampPhotoUpload);
 
 module.exports = router;

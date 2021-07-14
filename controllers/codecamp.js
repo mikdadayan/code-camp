@@ -1,13 +1,15 @@
 const path = require("path");
+const Codecamp = require("../models/CodeCamp");
+const Course = require("../models/Course");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middlewares/async");
 const geocoder = require("../utils/geocoder");
-const CodeCamp = require("../models/CodeCamp");
 
 // @desc  Get all Codecamps
 // @route GET /api/v1/codecamps
 // @access Public
 exports.getCodecamps = asyncHandler(async (req, res, next) => {
+  // console;
   res.status(200).json(res.advancedResults);
 });
 
@@ -32,7 +34,10 @@ exports.getCodecamp = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/codecamps
 // @access Private
 exports.createCodecamp = asyncHandler(async (req, res, next) => {
+  console.log(req.body, "1454");
   const newCodecamp = await Codecamp.create(req.body);
+  console.log("WHAAAT");
+
   res
     .status(201)
     .json({ success: true, msg: `Created Codecamp.`, data: newCodecamp });

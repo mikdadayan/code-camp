@@ -13,7 +13,7 @@ const {
 const advancedResults = require("../middlewares/advacncedResults");
 const Codecamp = require("../models/CodeCamp");
 
-const { protect } = require("../middlewares/auth");
+const { protect, authorize } = require("../middlewares/auth");
 
 const router = express.Router();
 
@@ -28,14 +28,16 @@ router.route("/radius/:zipcode/:distance").get(getCodecampsInRadius);
 router
   .route("/")
   .get(advancedResults(Codecamp, "courses"), getCodecamps)
-  .post(protect, createCodecamp);
+  .post(protect, authorize("publisher", "admin"), createCodecamp);
 
 router
   .route("/:id")
   .get(getCodecamp)
-  .put(protect, updateCodecamp)
-  .delete(protect, deleteCodecamp);
+  .put(protect, authorize("publisher", "admin"), updateCodecamp)
+  .delete(protect, authorize("publisher", "admin"), deleteCodecamp);
 
-router.route("/:id/photo").put(protect, codecampPhotoUpload);
+router
+  .route("/:id/photo")
+  .put(protect, authorize("publisher", "admin"), codecampPhotoUpload);
 
 module.exports = router;

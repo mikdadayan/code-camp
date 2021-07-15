@@ -42,6 +42,15 @@ exports.login = asyncHandler(async (req, res, next) => {
   sendTokenResponse(user, 200, res);
 });
 
+// @desc   Get current logged in user
+// @route  GET /api/v1/auth/getMeF
+// @access Private
+exports.getMe = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  res.status(200).json({ success: true, data: user });
+});
+
 // Get cookie from model, create cooke and send response
 const sendTokenResponse = (user, statusCode, res) => {
   //Create token
@@ -63,12 +72,3 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie("token", token, options)
     .json({ success: true, token });
 };
-
-// @desc   Get current logged in user
-// @route  GET /api/v1/auth/getMeF
-// @access Private
-exports.getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
-
-  res.status(200).json({ success: true, data: user });
-});

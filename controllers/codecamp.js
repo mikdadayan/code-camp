@@ -34,10 +34,7 @@ exports.getCodecamp = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/codecamps
 // @access Private
 exports.createCodecamp = asyncHandler(async (req, res, next) => {
-  console.log(req.body, "1454");
   const newCodecamp = await Codecamp.create(req.body);
-  console.log("WHAAAT");
-
   res
     .status(201)
     .json({ success: true, msg: `Created Codecamp.`, data: newCodecamp });

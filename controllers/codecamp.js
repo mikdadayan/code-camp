@@ -4,6 +4,7 @@ const Course = require("../models/Course");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middlewares/async");
 const geocoder = require("../utils/geocoder");
+const CodeCamp = require("../models/CodeCamp");
 
 // @desc  Get all Codecamps
 // @route GET /api/v1/codecamps
@@ -34,6 +35,22 @@ exports.getCodecamp = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/codecamps
 // @access Private
 exports.createCodecamp = asyncHandler(async (req, res, next) => {
+  // Add user to req.body
+  req.body.user = req.user.id;
+  // Check for published codecamp by user
+  const publishedCodecamp = await CodeCamp.findOne({ user: req.body.user });
+
+  // If user is not admin then they can add only one codecamp
+  console.log(req.user.role);
+  if (publishedCodecamp && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `The user with id ${req.user.id} has already published codecamp`,
+        400
+      )
+    );
+  }
+
   const newCodecamp = await Codecamp.create(req.body);
   res
     .status(201)

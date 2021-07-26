@@ -8,6 +8,7 @@ dotenv.config({ path: `${__dirname}/config/config.env` });
 // Load models
 const CodeCamp = require("./models/CodeCamp");
 const Course = require("./models/Course");
+const User = require("./models/User");
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -23,6 +24,9 @@ const codecamps = JSON.parse(
 const courses = JSON.parse(
   fs.readFileSync(`${__dirname}/_data/courses.json`, "utf-8")
 );
+const users = JSON.parse(
+  fs.readFileSync(`${__dirname}/_data/users.json`, "utf-8")
+);
 
 // Import to DB
 // Import to DB
@@ -30,6 +34,7 @@ const importData = async () => {
   try {
     await CodeCamp.create(codecamps);
     await Course.create(courses);
+    await User.create(users);
     console.log("Imported Data to DB ...".green.inverse);
     process.exit();
   } catch (error) {
@@ -42,6 +47,7 @@ const deleteData = async () => {
   try {
     await CodeCamp.deleteMany();
     await Course.deleteMany();
+    await User.deleteMany();
     console.log("Deleted Data from DB ...".red.inverse);
     process.exit();
   } catch (error) {

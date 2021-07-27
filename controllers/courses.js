@@ -41,10 +41,11 @@ const getCourse = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  Add course
-// @route POST  /api/v1/codecamps/codecampsId/courses
+// @route POST  /api/v1/codecamps/:codecampId/courses
 // @access Private
 const addCourse = asyncHandler(async (req, res, next) => {
   req.body.codecamp = req.params.codecampId;
+  req.body.user = req.user.id;
 
   const codecamp = await CodeCamp.findById(req.params.codecampId);
 

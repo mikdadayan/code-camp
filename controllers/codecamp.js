@@ -41,7 +41,6 @@ exports.createCodecamp = asyncHandler(async (req, res, next) => {
   const publishedCodecamp = await CodeCamp.findOne({ user: req.body.user });
 
   // If user is not admin then they can add only one codecamp
-  console.log(req.user.role);
   if (publishedCodecamp && req.user.role !== "admin") {
     return next(
       new ErrorResponse(
@@ -61,16 +60,25 @@ exports.createCodecamp = asyncHandler(async (req, res, next) => {
 // @route GET /api/v1/codecamps/:id
 // @access Private
 exports.updateCodecamp = asyncHandler(async (req, res, next) => {
-  const codecamp = await Codecamp.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  let codecamp = await Codecamp.findById(req.params.id);
 
   if (!codecamp) {
     return next(
       new ErrorResponse(`CodeCamp not found with id ${req.params.id}`, 404)
     );
   }
+
+  // Make sure that user is codecamp owner
+  if (codecamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(`User with ID ${req.params.id} is not authorized.`, 401)
+    );
+  }
+
+  codecamp = await Codecamp.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
   res.status(200).json({
     success: "true",
@@ -88,6 +96,16 @@ exports.deleteCodecamp = asyncHandler(async (req, res, next) => {
   if (!codecamp) {
     return next(
       new ErrorResponse(`CodeCamp not found with id ${req.params.id}`, 404)
+    );
+  }
+
+  // Make sure that user is codecamp owner
+  if (codecamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User with ID ${req.params.id} is not authorized to delete this codecamp.`,
+        401
+      )
     );
   }
 
@@ -133,6 +151,16 @@ exports.codecampPhotoUpload = asyncHandler(async (req, res, next) => {
   if (!codecamp) {
     return next(
       new ErrorResponse(`CodeCamp not found with id ${req.params.id}`, 404)
+    );
+  }
+
+  // Make sure that user is codecamp owner
+  if (codecamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User with ID ${req.params.id} is not authorized to delete this codecamp.`,
+        401
+      )
     );
   }
 

@@ -14,12 +14,13 @@ const getCourses = asyncHandler(async (req, res, next) => {
       .status(200)
       .json({ success: true, count: courses.length, data: courses });
   } else {
-    res.status(200).json(res.advacedResults);
+    console.log(res.advacedResults);
+    res.status(200).json(res.advancedResults);
   }
 
-  const courses = await query;
+  // const courses = await query;
 
-  res.status(200).json({ success: true, count: courses.length, data: courses });
+  // res.status(200).json({ success: true, count: courses.length, data: courses });
 });
 
 // @desc  Get a Single Courses
@@ -58,6 +59,16 @@ const addCourse = asyncHandler(async (req, res, next) => {
     );
   }
 
+  // Make sure that user is codecamp owner
+  if (codecamp.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User with ID ${req.user.id} is not authorized to add course codecamp ${codecamp.id}.`,
+        401
+      )
+    );
+  }
+
   const course = await Course.create(req.body);
 
   res.status(200).json({ success: true, data: course });
@@ -72,6 +83,16 @@ const updateCourse = asyncHandler(async (req, res, next) => {
   if (!course) {
     return next(
       new ErrorResponse(`No Course with the id of ${req.params.id}`, 404)
+    );
+  }
+
+  // Make sure that user is course owner
+  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User with ID ${req.user.id} is not authorized to update course ${course.id}.`,
+        401
+      )
     );
   }
 
@@ -92,6 +113,16 @@ const deleteCourse = asyncHandler(async (req, res, next) => {
   if (!course) {
     return next(
       new ErrorResponse(`No Course with the id of ${req.params.id}`, 404)
+    );
+  }
+
+  // Make sure that the user is course owner
+  if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
+    return next(
+      new ErrorResponse(
+        `User with ID ${req.user.id} is not authorized to delete course ${course.id}.`,
+        401
+      )
     );
   }
 

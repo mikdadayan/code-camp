@@ -19,9 +19,11 @@ const router = express.Router();
 
 // Include other resource routers
 const courseRouter = require("./courses");
+const reviewRouter = require("./reviews");
 
 // Reroute into other resource routers
 router.use("/:codecampId/courses", courseRouter);
+router.use("/:codecampId/reviews", reviewRouter);
 
 router.route("/radius/:zipcode/:distance").get(getCodecampsInRadius);
 

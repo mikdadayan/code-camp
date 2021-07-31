@@ -50,6 +50,7 @@ const courseSchema = new mongoose.Schema({
 });
 
 courseSchema.statics.getAverageCost = async function (codecampId) {
+  // Sidenote - this refers to Model
   const obj = await this.aggregate([
     { $match: { codecamp: codecampId } },
     { $group: { _id: "$codecamp", averageCost: { $avg: "$tuition" } } },
@@ -64,13 +65,16 @@ courseSchema.statics.getAverageCost = async function (codecampId) {
   }
 };
 
-// Call getaverageCost after save
+// Call getaverageCost after save course
 courseSchema.post("save", function () {
+  console.log("**********", this.constructor);
+  // Sidenote - this refers to instance of the course model
   this.constructor.getAverageCost(this.codecamp);
 });
 
-// Call getaverageCost before remove
+// Call getaverageCost before remove course
 courseSchema.pre("remove", function () {
+  // Sidenote - this refers to instance of the course model
   this.constructor.getAverageCost(this.codecamp);
 });
 

@@ -48,7 +48,7 @@ const createReview = asyncHandler(async (req, res, next) => {
   if (!codecamp) {
     return next(
       new ErrorResponse(
-        `Codecamp with the id of ${req.params.id} not found.`,
+        `Codecamp with the id of ${req.params.codecampId} not found.`,
         404
       )
     );

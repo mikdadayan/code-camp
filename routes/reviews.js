@@ -10,6 +10,8 @@ const {
   getReviews,
   getReview,
   createReview,
+  updateReview,
+  deleteReview,
 } = require("../controllers/reviews");
 
 router
@@ -23,6 +25,10 @@ router
   )
   .post(protect, authorize("user", "admin"), createReview);
 
-router.route("/:id").get(getReview);
+router
+  .route("/:id")
+  .get(getReview)
+  .delete(protect, authorize("admin", "user"), deleteReview)
+  .put(protect, authorize("admin", "user"), updateReview);
 
 module.exports = router;

@@ -67,7 +67,6 @@ courseSchema.statics.getAverageCost = async function (codecampId) {
 
 // Call getaverageCost after save course
 courseSchema.post("save", function () {
-  console.log("**********", this.constructor);
   // Sidenote - this refers to instance of the course model
   this.constructor.getAverageCost(this.codecamp);
 });

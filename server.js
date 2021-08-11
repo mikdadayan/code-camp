@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const fileUpload = require("express-fileupload");
 const cookieParser = require("cookie-parser");
 const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
 
 const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/error");
@@ -24,8 +25,10 @@ const reviews = require("./routes/reviews");
 
 const app = express();
 
+// Prevent from xss attacks
+
 // Set security headers
-app.use(helemt());
+app.use(helmet());
 
 // Cookie parser middleware
 app.use(cookieParser());

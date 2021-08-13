@@ -10,6 +10,7 @@ const xss = require("xss-clean");
 const rateLimit = require("express-rate-limit");
 const hpp = require("hpp");
 const color = require("colors");
+const cors = require("cors");
 
 const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/error");
@@ -38,6 +39,9 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+
+// Prevent from xss attacks
+app.use(cors());
 
 // Prevent http params pollution\
 app.use(hpp());

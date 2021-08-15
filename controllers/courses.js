@@ -42,9 +42,7 @@ const getCourse = asyncHandler(async (req, res, next) => {
 const addCourse = asyncHandler(async (req, res, next) => {
   req.body.codecamp = req.params.codecampId;
   req.body.user = req.user.id;
-
   const codecamp = await CodeCamp.findById(req.params.codecampId);
-
   if (!codecamp) {
     return next(
       new ErrorResponse(
@@ -63,9 +61,7 @@ const addCourse = asyncHandler(async (req, res, next) => {
       )
     );
   }
-
   const course = await Course.create(req.body);
-
   res.status(200).json({ success: true, data: course });
 });
 
@@ -74,13 +70,11 @@ const addCourse = asyncHandler(async (req, res, next) => {
 // @access Private
 const updateCourse = asyncHandler(async (req, res, next) => {
   let course = await Course.findById(req.params.id);
-
   if (!course) {
     return next(
       new ErrorResponse(`No Course with the id of ${req.params.id}`, 404)
     );
   }
-
   // Make sure that user is course owner
   if (course.user.toString() !== req.user.id && req.user.role !== "admin") {
     return next(
@@ -122,7 +116,6 @@ const deleteCourse = asyncHandler(async (req, res, next) => {
   }
 
   await course.remove();
-
   res.status(200).json({ success: true, data: {} });
 });
 

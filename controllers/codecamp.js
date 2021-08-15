@@ -24,8 +24,6 @@ exports.getCodecamp = asyncHandler(async (req, res, next) => {
       `CodeCamp not found with id ${req.params.id}`,
       404
     );
-    // error.name = "CastError";
-    // error.value = req.params.id;
     return next(error);
   }
   res.status(200).json({ success: true, data: codecamp });
@@ -108,7 +106,6 @@ exports.deleteCodecamp = asyncHandler(async (req, res, next) => {
       )
     );
   }
-
   codecamp.remove();
 
   res.status(200).json({
@@ -132,7 +129,6 @@ exports.getCodecampsInRadius = asyncHandler(async (req, res, next) => {
   // Divide distance by radius of earth
   // Earth Radius = 6378 km
   const radius = distance / 3963;
-
   const codecamps = await CodeCamp.find({
     location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
   });
@@ -195,7 +191,6 @@ exports.codecampPhotoUpload = asyncHandler(async (req, res, next) => {
     }
 
     await Codecamp.findByIdAndUpdate(req.params.id, { photo: file.name });
-
     res.status(200).json({ success: true, data: file.name });
   });
 });

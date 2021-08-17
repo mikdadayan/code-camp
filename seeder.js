@@ -11,6 +11,7 @@ const Course = require("./models/Course");
 const User = require("./models/User");
 const Review = require("./models/Review");
 
+// Set up connection with mongodb
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -61,8 +62,10 @@ const deleteData = async () => {
   }
 };
 
+// import all data to database
 if (process.argv[2] === "-i") {
   importData();
 } else if (process.argv[2] === "-d") {
+  // delete all data from database
   deleteData();
 }
